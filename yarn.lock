@@ -230,6 +230,11 @@
     "@babel/helper-validator-identifier" "^7.22.20"
     to-fast-properties "^2.0.0"
 
+"@bytekode/intents@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@bytekode/intents/-/intents-0.1.4.tgz#47c42bcda20884f060a15e94a79c6a99cec6892e"
+  integrity sha512-u1UKMKN2aY5kDvM7D36uiPJdUx/ksm4GRpOzA2CH1/r+cfnqyFPmmOLoOP1YINDiDGh9cyTPRQTm3d4A9s2mHg==
+
 "@coinbase/wallet-sdk@^3.6.6":
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/@coinbase/wallet-sdk/-/wallet-sdk-3.7.2.tgz#7a89bd9e3a06a1f26d4480d8642af33fb0c7e3aa"
