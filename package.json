@@ -11,6 +11,11 @@
   },
   "dependencies": {
     "@bytekode/intents": "^0.1.4",
+    "@web3auth/base": "^7.0.4",
+    "@web3auth/ethereum-provider": "^7.0.4",
+    "@web3auth/no-modal": "^7.0.4",
+    "@web3auth/openlogin-adapter": "^7.0.4",
+    "ethers": "^6.8.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "viem": "^1.16.6",
@@ -29,6 +34,9 @@
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.3",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "buffer": "^6.0.3",
+    "empty-module": "^0.0.2",
+    "process": "^0.11.10"
   }
 }

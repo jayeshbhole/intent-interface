@@ -1,8 +1,8 @@
-import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi";
-import { InjectedConnector } from "wagmi/connectors/injected";
 import { Intents } from "@bytekode/intents";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { zeroAddress } from "viem";
+import { useAccount, useNetwork } from "wagmi";
+import Web3AuthContext from "./Web3AuthContext";
 
 const intents = new Intents("test-api-key");
 
@@ -56,22 +56,67 @@ function App() {
 }
 
 function Profile() {
-  const { address, isConnected } = useAccount();
-  const { connect } = useConnect({
-    connector: new InjectedConnector(),
-  });
-  const { disconnect } = useDisconnect();
+  const [address, setAddress] = useState("");
+  const [copied, setCopied] = useState(false);
+  const { loggedIn, getAccounts, logout, login } = useContext(Web3AuthContext);
 
-  if (isConnected)
+  useEffect(() => {
+    const getAccount = async () => {
+      const account = await getAccounts();
+      // @ts-ignore
+      setAddress(account);
+    };
+    getAccount();
+  }, [getAccounts]);
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (copied) {
+      timeout = setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+    }
+    return () => timeout && clearTimeout(timeout);
+  }, [copied]);
+
+  if (loggedIn)
     return (
       <>
-        <button>
-          {address?.slice(0, 6)}...{address?.slice(-4)}
+        {/* onclick, copy to clipboard */}
+        <button
+          onClick={() => {
+            navigator.clipboard.writeText(address);
+            setCopied(true);
+          }}
+        >
+          {
+            // if copied, show "copied"
+            copied ? "Copied!" : `${address?.slice(0, 6)}...${address?.slice(-4)}`
+          }
         </button>
-        <button onClick={() => disconnect()}>Disconnect</button>
+        <button onClick={() => logout()}>Disconnect</button>
       </>
     );
-  return <button onClick={() => connect()}>Connect Wallet</button>;
+  return <button onClick={() => login()}>Login</button>;
 }
+
+// function Profile() {
+//   const { address, isConnected } = useAccount();
+//   const { connect } = useConnect({
+//     connector: new InjectedConnector(),
+//   });
+//   const { disconnect } = useDisconnect();
+
+//   if (isConnected)
+//     return (
+//       <>
+//         <button>
+//           {address?.slice(0, 6)}...{address?.slice(-4)}
+//         </button>
+//         <button onClick={() => disconnect()}>Disconnect</button>
+//       </>
+//     );
+//   return <button onClick={() => connect()}>Login</button>;
+// }
 
 export default App;

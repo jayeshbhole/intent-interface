@@ -1,9 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
-import "./index.css";
-import { WagmiConfig, createConfig, mainnet } from "wagmi";
 import { createPublicClient, http } from "viem";
+import { WagmiConfig, createConfig, mainnet } from "wagmi";
+import App from "./App";
+import { Web3AuthContextProvider } from "./Web3AuthContext";
+import "./index.css";
 
 const config = createConfig({
   autoConnect: true,
@@ -16,7 +17,9 @@ const config = createConfig({
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <WagmiConfig config={config}>
-      <App />
+      <Web3AuthContextProvider>
+        <App />
+      </Web3AuthContextProvider>
     </WagmiConfig>
   </React.StrictMode>
 );
