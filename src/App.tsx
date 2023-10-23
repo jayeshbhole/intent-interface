@@ -16,12 +16,18 @@ interface HistoryItem {
   }[];
 }
 
+const explorers: Record<string, string> = {
+  80001: "https://mumbai.polygonscan.com/",
+  43113: "https://cchain.explorer.avax-test.network/",
+};
+
 function App() {
   const [command, setCommand] = useState("");
   const [history, setHistory] = useState<HistoryItem[]>(JSON.parse(localStorage.getItem("history") || "[]"));
   const ethersSigner = useEthersSigner();
   const { chain } = useNetwork();
   const { address } = useAccount();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     console.log(chain);
@@ -36,6 +42,7 @@ function App() {
     command: string;
     signerAddress: string;
   }) => {
+    setLoading(true);
     const txObject = await intents.getTransaction(chainId, command, signerAddress);
     const transactions = [];
     try {
@@ -60,6 +67,7 @@ function App() {
           transactions,
         },
       ]);
+      setLoading(false);
     } catch (e) {
       // setError(e);
       console.log(e);
@@ -78,24 +86,28 @@ function App() {
       </div>
 
       <div className="flex gap-4 flex-col overflow-auto">
-        {history.map((item, i) => (
-          <div
-            className="flex flex-col gap-2 p-4 bg-slate-500/10 rounded-lg"
-            key={i}
-          >
-            <p>{item.command}</p>
-            {item.transactions.map((tx) => (
-              <a
-                href={`https://mumbai.polygonscan.com/tx/${tx.tx}`}
-                target="_blank"
-                rel="noreferrer"
-                key={tx.tx}
-              >
-                {tx.tx}
-              </a>
-            ))}
-          </div>
-        ))}
+        {address ? (
+          history.map((item, i) => (
+            <div
+              className="flex flex-col gap-2 p-4 bg-slate-500/10 rounded-lg"
+              key={i}
+            >
+              <p>{item.command}</p>
+              {item.transactions.map((tx) => (
+                <a
+                  href={`${explorers[tx.chainId]}tx/${tx.tx}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  key={tx.tx}
+                >
+                  {tx.tx}
+                </a>
+              ))}
+            </div>
+          ))
+        ) : (
+          <></>
+        )}
       </div>
 
       <h1 className="text-center text-xl">your intentions, ser 👀</h1>
@@ -103,6 +115,7 @@ function App() {
       <div className="relative w-[70ch]">
         <input
           type="text"
+          disabled={loading}
           value={command}
           onChange={(e) => setCommand(e.target.value)}
           placeholder="Bridge funds from... to..."
@@ -110,15 +123,24 @@ function App() {
         />
 
         <button
-          className="absolute right-1 rounded-lg top-1 text-white p-3"
+          className="absolute right-1 rounded-lg top-1 text-white p-3 flex gap-2 items-center disabled:cursor-not-allowed"
+          disabled={loading}
           onClick={() =>
             handleExecute({
               command,
-              chainId: "80001",
+              chainId: chain?.id.toString() || "",
               signerAddress: address || zeroAddress,
             })
           }
         >
+          {loading ? (
+            <svg
+              className="animate-pulse h-5 w-5 bg-indigo-500 rounded-full"
+              viewBox="0 0 24 2"
+            ></svg>
+          ) : (
+            <></>
+          )}
           Execute
         </button>
       </div>
@@ -135,7 +157,7 @@ function Profile() {
     const getAccount = async () => {
       const account = await getAccounts();
       // @ts-ignore
-      setAddress(account);
+      setAddress(account || "");
     };
     getAccount();
   }, [getAccounts]);

@@ -63,15 +63,29 @@ export const Web3AuthContextProvider = ({ children }: { children: React.ReactNod
   useEffect(() => {
     const init = async () => {
       try {
-        const chainConfig = {
-          chainNamespace: CHAIN_NAMESPACES.EIP155,
-          chainId: "0x13881",
-          rpcTarget: "https://polygon-mumbai.g.alchemy.com/v2/vYhB3s8yoC3phzQaWlwv3yLPHGWPn1hO",
-          displayName: "Mumbai Testnet",
-          blockExplorer: "https://mumbai.polygonscan.com",
-          ticker: "MATIC",
-          tickerName: "Matic",
-        };
+        let chainConfig;
+        const defaultChain: string = "avalanche";
+        if (defaultChain === "mumbai") {
+          chainConfig = {
+            chainNamespace: CHAIN_NAMESPACES.EIP155,
+            chainId: "0x13881",
+            rpcTarget: "https://polygon-mumbai.g.alchemy.com/v2/vYhB3s8yoC3phzQaWlwv3yLPHGWPn1hO",
+            displayName: "Mumbai Testnet",
+            blockExplorer: "https://mumbai.polygonscan.com",
+            ticker: "MATIC",
+            tickerName: "Matic",
+          };
+        } else {
+          chainConfig = {
+            chainNamespace: CHAIN_NAMESPACES.EIP155,
+            chainId: "0xa869",
+            rpcTarget: "https://api.avax-test.network/ext/bc/C/rpc",
+            displayName: "Avalanche Fuji Testnet",
+            blockExplorer: "https://cchain.explorer.avax-test.network",
+            ticker: "AVAX",
+            tickerName: "Avalanche",
+          };
+        }
 
         // eslint-disable-next-line @typescript-eslint/no-shadow
         const web3auth = new Web3AuthNoModal({
@@ -100,7 +114,7 @@ export const Web3AuthContextProvider = ({ children }: { children: React.ReactNod
 
         setWeb3auth(web3auth);
         setProvider(web3auth.provider);
-        setNetwork("mumbai");
+        setNetwork(defaultChain);
         if (web3auth.connected) {
           setLoggedIn(true);
         }
