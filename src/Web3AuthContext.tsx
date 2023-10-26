@@ -67,6 +67,7 @@ export const Web3AuthContextProvider = ({ children }: { children: React.ReactNod
         const defaultChain: string = "avalanche";
         if (defaultChain === "mumbai") {
           chainConfig = {
+            // @ts-ignore
             chainNamespace: CHAIN_NAMESPACES.EIP155,
             chainId: "0x13881",
             rpcTarget: "https://polygon-mumbai.g.alchemy.com/v2/vYhB3s8yoC3phzQaWlwv3yLPHGWPn1hO",
@@ -77,6 +78,7 @@ export const Web3AuthContextProvider = ({ children }: { children: React.ReactNod
           };
         } else {
           chainConfig = {
+            // @ts-ignore
             chainNamespace: CHAIN_NAMESPACES.EIP155,
             chainId: "0xa869",
             rpcTarget: "https://api.avax-test.network/ext/bc/C/rpc",
